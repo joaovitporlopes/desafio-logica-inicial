@@ -1,0 +1,1568 @@
+PROMPT PARA CRIAR SISTEMA DE CURRICULOS EM ATS FRIENDLY JOAO VITOR LOPES DA SILVA
+
+eu que cria um app do zero no lovable e 100% la para fazer matchmaking de vaga de vagas de emprego e criar versoes do curriculo do usuario que sejam ATS Friendly para essa vaga. Quero que você use shad como design system Quero nas cores azul claro, branco e amarelo claro Me mande prompt unico em formanto MarkDown
+
+
+````markdown
+# Crie um SaaS completo de Matchmaking de Vagas + Currículo ATS
+
+Quero que você construa **100% do aplicativo dentro do Lovable**, do zero, incluindo frontend, backend, banco de dados, autenticação, lógica de negócio, integrações e experiência do usuário.
+
+Não quero apenas uma landing page ou protótipo visual. Quero um **MVP funcional e navegável**, com arquitetura preparada para evoluir para um produto SaaS real.
+
+## 1. Conceito do produto
+
+Crie uma plataforma SaaS que ajude candidatos a encontrar vagas compatíveis com seus currículos e, para cada vaga, gere uma **versão personalizada do currículo**, otimizada para sistemas ATS (Applicant Tracking System).
+
+Fluxo principal:
+
+1. Usuário cria uma conta.
+2. Usuário cadastra ou importa seu currículo.
+3. O sistema estrutura e salva as informações profissionais do usuário.
+4. Usuário informa preferências profissionais.
+5. O sistema apresenta vagas de emprego compatíveis.
+6. Para cada vaga, o sistema calcula um **Match Score**.
+7. O sistema mostra por que o usuário combina ou não combina com a vaga.
+8. O usuário pode selecionar uma vaga.
+9. O sistema analisa a descrição da vaga.
+10. O sistema cria uma versão do currículo especificamente adaptada àquela vaga.
+11. O currículo deve ser otimizado para ATS sem inventar experiências, cargos, empresas, competências ou resultados.
+12. O usuário pode revisar, editar e baixar o currículo final em PDF.
+13. O sistema mantém histórico das vagas e versões de currículo geradas.
+
+O produto deve transmitir a sensação de uma plataforma moderna de **Career Intelligence / AI Job Matching**.
+
+---
+
+# 2. Stack e arquitetura
+
+Use uma arquitetura moderna e simples de manter.
+
+Preferências:
+
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- shadcn/ui como DESIGN SYSTEM PRINCIPAL
+- Supabase para:
+  - autenticação
+  - PostgreSQL
+  - storage
+  - backend/database functions quando necessário
+- Componentização reutilizável
+- Responsive design
+- Mobile-first
+- Dark mode preparado para o futuro, mas inicialmente usar light mode
+- Validação de formulários
+- Estados de loading, empty state, error state e success state
+- Toasts para feedback das ações
+
+Use **shadcn/ui em toda a interface possível**.
+
+Não crie componentes visuais inconsistentes quando houver equivalente no shadcn/ui.
+
+Utilize componentes como:
+
+- Button
+- Input
+- Textarea
+- Select
+- Checkbox
+- Radio Group
+- Dialog
+- Sheet
+- Tabs
+- Card
+- Badge
+- Progress
+- Tooltip
+- Dropdown Menu
+- Alert
+- Accordion
+- Avatar
+- Separator
+- Skeleton
+- Table
+- Command
+- Calendar
+- Form
+
+---
+
+# 3. Identidade visual
+
+Crie uma identidade visual profissional, moderna, limpa e amigável.
+
+## Cores principais
+
+Use principalmente:
+
+- Azul claro como cor principal
+- Branco como fundo principal
+- Amarelo claro como cor de destaque
+- Azul escuro para textos importantes
+- Cinza muito claro para superfícies secundárias
+- Verde para sucesso/match alto
+- Vermelho discreto para alertas
+
+Paleta sugerida:
+
+```text
+Primary Blue: #60A5FA
+Light Blue: #DBEAFE
+Soft Yellow: #FEF3C7
+Yellow Accent: #FDE68A
+Dark Navy: #172554
+Background: #F8FAFC
+White: #FFFFFF
+Text: #1E293B
+Muted Text: #64748B
+Success: #22C55E
+Warning: #F59E0B
+Danger: #EF4444
+Border: #E2E8F0
+````
+
+A interface deve parecer:
+
+* moderna
+* confiável
+* tecnológica
+* leve
+* profissional
+* acessível
+* não excessivamente corporativa
+
+Evite excesso de gradientes, sombras pesadas ou elementos decorativos.
+
+Use bordas arredondadas moderadas.
+
+---
+
+# 4. Nome provisório
+
+Use um nome provisório para o produto:
+
+**MatchCV**
+
+Crie a aplicação de forma que o nome possa ser facilmente alterado futuramente.
+
+Logo inicial simples baseada em texto + ícone relacionado a:
+
+* currículo
+* conexão
+* matching
+* carreira
+
+---
+
+# 5. Landing Page
+
+Crie uma landing page pública em `/`.
+
+Hero:
+
+Título:
+
+**Seu currículo. A vaga certa. Um match mais inteligente.**
+
+Subtítulo:
+
+**Encontre vagas compatíveis com seu perfil e crie currículos personalizados e preparados para ATS para aumentar suas chances de passar pela triagem.**
+
+CTAs:
+
+* "Criar minha conta"
+* "Ver como funciona"
+
+Inclua:
+
+### Hero visual
+
+Mostrar uma representação visual de:
+
+Currículo → AI Match → Vaga
+
+Com um Match Score visual, por exemplo:
+
+**92% Match**
+
+### Seção "Como funciona"
+
+3 ou 4 passos:
+
+1. Cadastre seu currículo
+2. Encontre vagas compatíveis
+3. Analise seu Match Score
+4. Gere seu currículo ATS personalizado
+
+### Seção de benefícios
+
+Cards:
+
+* Match inteligente com vagas
+* Currículos personalizados
+* Otimização para ATS
+* Identificação de gaps
+* Histórico de candidaturas
+* Mais organização na busca de emprego
+
+### Seção de demonstração
+
+Mostrar uma vaga fictícia e um currículo fictício sendo comparados.
+
+### CTA final
+
+**Pronto para encontrar vagas que combinam com você?**
+
+Botão:
+
+**Começar gratuitamente**
+
+### Footer
+
+Links:
+
+* Produto
+* Como funciona
+* Privacidade
+* Termos
+* Contato
+
+---
+
+# 6. Autenticação
+
+Criar autenticação usando Supabase.
+
+Páginas:
+
+* `/login`
+* `/signup`
+* `/forgot-password`
+* `/reset-password`
+
+Login:
+
+* Email
+* Senha
+* Entrar
+* Esqueci minha senha
+* Criar conta
+
+Cadastro:
+
+* Nome
+* Email
+* Senha
+* Confirmar senha
+
+Após cadastro, enviar o usuário para um onboarding.
+
+---
+
+# 7. Onboarding
+
+Criar onboarding em etapas.
+
+## Etapa 1 — Perfil
+
+Campos:
+
+* Nome
+* Foto opcional
+* Localização
+* País
+* Cidade
+
+## Etapa 2 — Objetivo profissional
+
+Campos:
+
+* Cargo desejado
+* Cargos alternativos
+* Senioridade
+* Área profissional
+* Salário mínimo desejado
+* Modelo de trabalho:
+
+  * Remoto
+  * Híbrido
+  * Presencial
+
+## Etapa 3 — Localização
+
+Permitir:
+
+* cidade
+* estado
+* país
+* remoto
+
+## Etapa 4 — Currículo
+
+Permitir:
+
+* upload de PDF
+* upload de DOCX
+* colar currículo em texto
+
+Mostrar:
+
+**"Vamos transformar seu currículo em um perfil profissional estruturado."**
+
+Após processamento, mostrar resumo:
+
+* Experiência
+* Formação
+* Skills
+* Idiomas
+* Certificações
+
+O usuário deve poder editar todas essas informações.
+
+---
+
+# 8. Dashboard
+
+Criar `/dashboard`.
+
+Layout desktop:
+
+Sidebar esquerda + conteúdo principal.
+
+Sidebar:
+
+* Dashboard
+* Meu currículo
+* Encontrar vagas
+* Meus matches
+* Currículos personalizados
+* Candidaturas
+* Perfil
+* Configurações
+
+No topo:
+
+* busca
+* notificações
+* avatar
+* menu do usuário
+
+Dashboard deve mostrar:
+
+### Card de boas-vindas
+
+"Olá, {nome}! 👋"
+
+"Veja as melhores oportunidades para o seu perfil."
+
+### Estatísticas
+
+Cards:
+
+* Vagas compatíveis
+* Match médio
+* Currículos criados
+* Candidaturas
+
+### Top Matches
+
+Mostrar 3-5 vagas com maior Match Score.
+
+Cada card:
+
+* empresa
+* cargo
+* localização
+* modalidade
+* salário quando disponível
+* Match Score
+* botão "Ver vaga"
+
+### Alertas de perfil
+
+Exemplo:
+
+**Seu perfil pode melhorar**
+
+"Adicione 3 competências para aumentar a compatibilidade com vagas de Product Manager."
+
+CTA:
+
+"Melhorar perfil"
+
+---
+
+# 9. Meu currículo
+
+Criar `/resume`.
+
+A página deve permitir gerenciar o currículo base.
+
+Seções:
+
+### Informações pessoais
+
+* Nome
+* Email
+* Telefone
+* Cidade
+* LinkedIn
+* Portfólio
+* GitHub
+* Website
+
+### Resumo profissional
+
+Textarea com contador de caracteres.
+
+### Experiência profissional
+
+Cada experiência deve possuir:
+
+* Cargo
+* Empresa
+* Local
+* Data inicial
+* Data final
+* Atual
+* Descrição
+* Principais responsabilidades
+* Resultados/conquistas
+
+Permitir adicionar múltiplas experiências.
+
+### Formação
+
+* Instituição
+* Curso
+* Grau
+* Data inicial
+* Data final
+
+### Skills
+
+Permitir adicionar/remover skills.
+
+Separar:
+
+* Hard Skills
+* Soft Skills
+* Ferramentas
+* Tecnologias
+
+### Idiomas
+
+* Idioma
+* Nível
+
+### Certificações
+
+* Nome
+* Instituição
+* Data
+* Link opcional
+
+### Projetos
+
+* Nome
+* Descrição
+* Tecnologias
+* Link
+
+Botão:
+
+**Salvar currículo**
+
+---
+
+# 10. Parser de currículo
+
+Criar fluxo para upload de PDF/DOCX.
+
+O sistema deve tentar extrair:
+
+* informações pessoais
+* resumo
+* experiências
+* empresas
+* cargos
+* datas
+* formação
+* skills
+* idiomas
+* certificações
+* projetos
+
+Depois da extração, mostrar uma tela de revisão.
+
+Título:
+
+**Revise as informações encontradas**
+
+Mensagem:
+
+"Extraímos estas informações do seu currículo. Confira tudo antes de salvar."
+
+Cada seção deve ser editável.
+
+IMPORTANTE:
+
+Nunca inventar informações que não estejam presentes no currículo fornecido pelo usuário.
+
+---
+
+# 11. Encontrar vagas
+
+Criar `/jobs`.
+
+Tela com:
+
+### Busca
+
+Campo:
+
+**"Qual vaga você está procurando?"**
+
+Filtros:
+
+* Cargo
+* Localização
+* Remoto
+* Híbrido
+* Presencial
+* Senioridade
+* Faixa salarial
+* Empresa
+* Área
+* Data de publicação
+
+Cards de vagas.
+
+Cada card deve mostrar:
+
+* cargo
+* empresa
+* localização
+* modalidade
+* salário
+* data
+* Match Score
+* principais skills encontradas
+
+Exemplo:
+
+```text
+Senior Product Manager
+Empresa XYZ
+
+São Paulo • Híbrido
+
+R$ 15k - R$ 20k
+
+92% Match
+
+✓ Product Strategy
+✓ Agile
+✓ Analytics
+✓ Stakeholder Management
+
+[Ver vaga]
+```
+
+---
+
+# 12. Match Score
+
+Criar sistema visual de compatibilidade.
+
+O Match Score deve considerar, quando os dados estiverem disponíveis:
+
+* Skills
+* Experiência
+* Senioridade
+* Cargo
+* Formação
+* Localização
+* Idiomas
+* Requisitos obrigatórios
+* Palavras-chave
+* Ferramentas/tecnologias
+
+Score de 0 a 100.
+
+Categorias:
+
+### 90-100
+
+**Excelente match**
+
+### 75-89
+
+**Bom match**
+
+### 60-74
+
+**Match moderado**
+
+### abaixo de 60
+
+**Baixo match**
+
+Mostrar o score com:
+
+* círculo/progress
+* cor
+* explicação
+
+Não mostrar apenas o número.
+
+Exemplo:
+
+**92% Match**
+
+"Seu perfil atende à maioria dos requisitos desta vaga."
+
+---
+
+# 13. Página de detalhes da vaga
+
+Criar `/jobs/:id`.
+
+Layout:
+
+Coluna principal:
+
+* Cargo
+* Empresa
+* Local
+* Modalidade
+* Salário
+* Data
+* Descrição completa
+* Requisitos
+* Responsabilidades
+* Benefícios
+
+Sidebar:
+
+### Seu Match
+
+**92%**
+
+### Você atende
+
+* Product Strategy
+* Agile
+* SQL
+* Stakeholder Management
+
+### Você pode melhorar
+
+* Amplitude
+* B2B SaaS
+
+### Botões
+
+**Criar currículo para esta vaga**
+
+**Salvar vaga**
+
+**Marcar como candidatura**
+
+---
+
+# 14. Análise detalhada do Match
+
+Criar uma seção visual mostrando:
+
+## Pontos fortes
+
+Skills e requisitos encontrados no currículo.
+
+## Gaps
+
+Requisitos da vaga que não aparecem no currículo.
+
+## Palavras-chave importantes
+
+Mostrar keywords da vaga.
+
+Exemplo:
+
+```text
+Product Strategy
+Roadmap
+A/B Testing
+SQL
+Analytics
+Stakeholder Management
+Agile
+B2B SaaS
+```
+
+Separar:
+
+* Encontradas no currículo
+* Não encontradas
+* Parcialmente relacionadas
+
+IMPORTANTE:
+
+Não recomendar que o usuário adicione uma skill que ele não possui.
+
+O sistema pode sugerir:
+
+"Se você possui experiência com X, considere incluí-la no currículo."
+
+Nunca deve transformar uma sugestão em uma afirmação falsa.
+
+---
+
+# 15. Gerador de currículo ATS
+
+Criar a funcionalidade principal:
+
+**"Criar currículo personalizado"**
+
+Fluxo:
+
+1. Usuário escolhe uma vaga.
+2. Sistema analisa a vaga.
+3. Sistema analisa o currículo base.
+4. Sistema compara ambos.
+5. Sistema gera uma nova versão do currículo.
+6. Usuário revisa.
+7. Usuário edita.
+8. Usuário salva.
+9. Usuário exporta.
+
+Título:
+
+**Seu currículo personalizado para esta vaga**
+
+Mostrar:
+
+### ATS Score
+
+Exemplo:
+
+**87/100**
+
+Explicar:
+
+* Keywords relevantes
+* Estrutura
+* Clareza
+* Experiência relevante
+* Formatação
+* Compatibilidade com ATS
+
+---
+
+# 16. Regras do gerador ATS
+
+Essa é uma parte crítica do produto.
+
+O sistema deve:
+
+* priorizar informações verdadeiras do currículo original
+* adaptar o resumo profissional à vaga
+* reorganizar experiências para destacar as mais relevantes
+* enfatizar competências que o usuário realmente possui
+* utilizar palavras-chave presentes na vaga quando forem compatíveis com o histórico do usuário
+* melhorar clareza e objetividade
+* melhorar bullets de experiência
+* eliminar informações irrelevantes quando apropriado
+* utilizar linguagem profissional
+* evitar excesso de palavras-chave
+* manter o currículo legível
+
+O sistema NÃO deve:
+
+* inventar experiências
+* inventar empresas
+* inventar cargos
+* inventar resultados
+* inventar métricas
+* inventar certificações
+* inventar ferramentas
+* inventar formação
+* alegar que o usuário possui uma skill que ele não possui
+
+Se a vaga exigir algo que não aparece no currículo, mostrar como:
+
+**Gap identificado**
+
+e não adicionar automaticamente ao currículo.
+
+---
+
+# 17. Estrutura ATS do currículo
+
+Gerar currículo com estrutura simples e ATS-friendly.
+
+Ordem padrão:
+
+1. Nome
+2. Contato
+3. Resumo profissional
+4. Experiência profissional
+5. Skills
+6. Formação
+7. Certificações
+8. Projetos
+9. Idiomas
+
+Evitar:
+
+* tabelas complexas
+* múltiplas colunas
+* excesso de gráficos
+* ícones importantes para transmitir informação
+* barras de skill
+* elementos visuais que dificultem parsing
+* informações escondidas
+
+Criar templates ATS limpos.
+
+Inicialmente disponibilizar:
+
+### Template 1 — Classic ATS
+
+Muito simples e profissional.
+
+### Template 2 — Modern ATS
+
+Moderno, mas ainda altamente legível por ATS.
+
+### Template 3 — Executive ATS
+
+Mais sofisticado para cargos de senioridade elevada.
+
+---
+
+# 18. Editor de currículo
+
+Criar `/resumes/:id/edit`.
+
+Interface dividida:
+
+### Esquerda
+
+Editor das seções.
+
+### Direita
+
+Preview do currículo em tempo real.
+
+Mostrar:
+
+**ATS Score**
+
+e indicadores:
+
+* Keywords
+* Estrutura
+* Relevância
+* Clareza
+
+Permitir:
+
+* editar texto
+* reorganizar seções
+* editar bullets
+* adicionar/remover conteúdo
+* trocar template
+* salvar versão
+
+Botões:
+
+**Salvar**
+
+**Baixar PDF**
+
+**Criar nova versão**
+
+---
+
+# 19. Histórico de versões
+
+Criar `/resumes`.
+
+Mostrar todos os currículos personalizados.
+
+Cada item:
+
+```text
+Product Manager — Empresa XYZ
+Criado em 24/08/2026
+
+ATS Score: 91
+Match Score: 94%
+
+Template: Modern ATS
+
+[Editar]
+[Duplicar]
+[Baixar]
+```
+
+Permitir várias versões para a mesma vaga.
+
+---
+
+# 20. Candidaturas
+
+Criar `/applications`.
+
+Status:
+
+* Interessado
+* Aplicado
+* Entrevista
+* Oferta
+* Rejeitado
+* Arquivado
+
+Visualizar em:
+
+* tabela
+* kanban
+
+Cada candidatura deve possuir:
+
+* vaga
+* empresa
+* data
+* currículo utilizado
+* status
+* observações
+* próxima etapa
+
+---
+
+# 21. Perfil
+
+Criar `/profile`.
+
+Permitir editar:
+
+* nome
+* foto
+* email
+* telefone
+* localização
+* LinkedIn
+* portfólio
+* preferências profissionais
+
+---
+
+# 22. Configurações
+
+Criar `/settings`.
+
+Seções:
+
+### Conta
+
+* nome
+* email
+* senha
+
+### Preferências de vagas
+
+* cargos
+* localização
+* remoto
+* senioridade
+* salário
+
+### Privacidade
+
+* dados do currículo
+* exclusão de conta
+
+### Notificações
+
+* novas vagas compatíveis
+* novos matches
+* lembretes
+
+---
+
+# 23. Banco de dados
+
+Criar estrutura Supabase preparada para o produto.
+
+Tabelas sugeridas:
+
+### profiles
+
+* id
+* user_id
+* full_name
+* avatar_url
+* phone
+* location
+* linkedin_url
+* portfolio_url
+* github_url
+* created_at
+* updated_at
+
+### resumes
+
+* id
+* user_id
+* name
+* original_file_url
+* raw_text
+* summary
+* ats_score
+* is_primary
+* created_at
+* updated_at
+
+### experiences
+
+* id
+* resume_id
+* company
+* title
+* location
+* start_date
+* end_date
+* is_current
+* description
+* achievements
+* order_index
+
+### education
+
+* id
+* resume_id
+* institution
+* degree
+* field
+* start_date
+* end_date
+
+### skills
+
+* id
+* resume_id
+* name
+* category
+* proficiency
+
+### languages
+
+* id
+* resume_id
+* language
+* proficiency
+
+### certifications
+
+* id
+* resume_id
+* name
+* issuer
+* date
+* url
+
+### projects
+
+* id
+* resume_id
+* name
+* description
+* technologies
+* url
+
+### jobs
+
+* id
+* external_id
+* title
+* company
+* location
+* remote_type
+* salary_min
+* salary_max
+* description
+* requirements
+* responsibilities
+* source
+* source_url
+* published_at
+* created_at
+
+### job_matches
+
+* id
+* user_id
+* job_id
+* match_score
+* skill_score
+* experience_score
+* seniority_score
+* location_score
+* keyword_score
+* strengths
+* gaps
+* keywords
+* created_at
+
+### customized_resumes
+
+* id
+* user_id
+* job_id
+* base_resume_id
+* title
+* content
+* ats_score
+* template
+* created_at
+* updated_at
+
+### applications
+
+* id
+* user_id
+* job_id
+* customized_resume_id
+* status
+* applied_at
+* notes
+* created_at
+* updated_at
+
+### saved_jobs
+
+* id
+* user_id
+* job_id
+* created_at
+
+---
+
+# 24. Segurança
+
+Implementar Row Level Security no Supabase.
+
+Usuários só podem acessar:
+
+* seus próprios perfis
+* seus próprios currículos
+* seus próprios dados
+* seus próprios matches
+* suas próprias candidaturas
+
+Dados de outros usuários nunca devem ser expostos.
+
+Arquivos de currículo devem possuir controle de acesso apropriado.
+
+Nunca expor secrets ou API keys no frontend.
+
+---
+
+# 25. IA
+
+Estruture o aplicativo para utilizar IA em três principais funções:
+
+### Resume Parsing
+
+Transformar currículo em dados estruturados.
+
+### Job Analysis
+
+Extrair:
+
+* requisitos
+* skills
+* senioridade
+* keywords
+* responsabilidades
+* sinais de experiência
+
+### Resume Tailoring
+
+Criar uma versão personalizada do currículo baseada na vaga.
+
+A camada de IA deve ser implementada de forma modular para que o provedor de LLM possa ser alterado posteriormente.
+
+Não coloque API keys diretamente no frontend.
+
+Use backend/server-side functions para chamadas de IA.
+
+---
+
+# 26. Prompt interno para geração de currículo
+
+Ao implementar a função de geração, utilize regras equivalentes a:
+
+```text
+Você é um especialista em currículos profissionais e sistemas ATS.
+
+Sua tarefa é adaptar um currículo existente para uma vaga específica.
+
+REGRAS ABSOLUTAS:
+
+1. Nunca invente informações.
+2. Nunca invente experiências.
+3. Nunca invente empresas.
+4. Nunca invente cargos.
+5. Nunca invente resultados ou métricas.
+6. Nunca invente certificações.
+7. Nunca invente formação.
+8. Nunca invente skills.
+9. Só utilize informações presentes no currículo original.
+10. Você pode reorganizar, resumir e melhorar a redação das informações existentes.
+11. Você pode utilizar palavras-chave da vaga quando elas forem compatíveis com informações reais do candidato.
+12. Se um requisito da vaga não estiver presente no currículo, marque como gap.
+13. O currículo deve ser ATS-friendly.
+14. Priorize clareza, relevância e palavras-chave naturais.
+15. Evite keyword stuffing.
+16. Mantenha linguagem profissional e objetiva.
+
+Retorne:
+- resumo profissional
+- experiências adaptadas
+- skills relevantes
+- formação
+- certificações
+- projetos
+- keywords utilizadas
+- gaps identificados
+- justificativa das principais alterações
+```
+
+---
+
+# 27. Estados da aplicação
+
+Todas as telas devem possuir estados de:
+
+### Loading
+
+Use Skeleton do shadcn/ui.
+
+### Empty
+
+Exemplo:
+
+**Ainda não encontramos matches.**
+
+"Complete seu perfil para receber recomendações mais precisas."
+
+### Error
+
+Mensagem amigável + botão tentar novamente.
+
+### Success
+
+Toast ou feedback visual.
+
+---
+
+# 28. Responsividade
+
+O app precisa funcionar muito bem em:
+
+* Desktop
+* Tablet
+* Mobile
+
+No mobile:
+
+* sidebar vira menu
+* cards ocupam largura total
+* editor do currículo deve ficar confortável
+* preview pode virar uma aba separada
+* filtros de vagas devem abrir em Sheet/Drawer
+
+---
+
+# 29. Acessibilidade
+
+Utilizar boas práticas de acessibilidade:
+
+* labels nos campos
+* contraste adequado
+* navegação por teclado
+* foco visível
+* aria-label quando necessário
+* componentes shadcn/ui acessíveis
+* mensagens de erro claras
+
+---
+
+# 30. Microinterações
+
+Adicionar animações discretas:
+
+* loading
+* progress
+* hover
+* transições de páginas
+* geração de currículo
+* atualização de Match Score
+
+Evitar animações exageradas.
+
+---
+
+# 31. Dados de demonstração
+
+Para que o aplicativo seja visualmente funcional mesmo sem uma fonte real de vagas inicialmente, criar dados mockados realistas.
+
+Criar pelo menos:
+
+* 10 vagas
+* 3 empresas
+* diferentes níveis de senioridade
+* diferentes modalidades
+* diferentes Match Scores
+
+Deixar a arquitetura preparada para substituir os mocks por uma API real de vagas.
+
+---
+
+# 32. Fonte de vagas
+
+Não inventar que existe integração real com plataformas externas.
+
+Inicialmente, utilizar dados mockados ou uma camada de integração claramente separada.
+
+Criar uma interface de serviço como:
+
+```text
+JobProvider
+```
+
+para permitir futuramente integrar APIs/fontes de vagas.
+
+Cada vaga deve possuir `source` e `source_url`.
+
+---
+
+# 33. Experiência principal do usuário
+
+A experiência mais importante do produto deve ser:
+
+```text
+Dashboard
+     ↓
+Encontrar vagas
+     ↓
+Ver Match Score
+     ↓
+Ver detalhes da vaga
+     ↓
+Analisar gaps
+     ↓
+Criar currículo personalizado
+     ↓
+Revisar currículo
+     ↓
+Ver ATS Score
+     ↓
+Baixar PDF
+     ↓
+Registrar candidatura
+```
+
+Essa jornada deve ser extremamente clara.
+
+---
+
+# 34. Navegação
+
+Rotas principais:
+
+```text
+/
+ /login
+ /signup
+ /forgot-password
+ /onboarding
+ /dashboard
+ /resume
+ /jobs
+ /jobs/:id
+ /matches
+ /resumes
+ /resumes/:id/edit
+ /applications
+ /profile
+ /settings
+```
+
+Rotas protegidas devem exigir autenticação.
+
+---
+
+# 35. Design dos cards
+
+Utilizar bastante:
+
+* Card
+* Badge
+* Progress
+* Button
+* Avatar
+* Tooltip
+
+Exemplo de Match Card:
+
+```text
+┌───────────────────────────────────┐
+│ Senior Product Manager            │
+│ Empresa XYZ                       │
+│                                   │
+│ São Paulo • Híbrido               │
+│                                   │
+│        92%                        │
+│     Excelente Match               │
+│                                   │
+│ ✓ Product Strategy                │
+│ ✓ Agile                           │
+│ ✓ Analytics                       │
+│                                   │
+│ [Ver vaga] [Criar currículo]      │
+└───────────────────────────────────┘
+```
+
+---
+
+# 36. Dashboard visual
+
+O dashboard deve priorizar:
+
+1. Match Score
+2. Vagas recomendadas
+3. Status da busca
+4. Qualidade do currículo
+5. Próximas ações
+
+Criar uma seção:
+
+### "Próximo melhor passo"
+
+Exemplos:
+
+* "Complete seu perfil"
+* "Adicione seu LinkedIn"
+* "Crie um currículo para esta vaga"
+* "Você tem 5 vagas com mais de 85% de match"
+
+---
+
+# 37. Monetização preparada para futuro
+
+Não é necessário implementar cobrança agora, mas estruturar o sistema para futuramente ter planos:
+
+### Free
+
+* currículo base
+* matches limitados
+* poucos currículos personalizados
+
+### Pro
+
+* matches ilimitados
+* currículos personalizados
+* análises ATS
+* histórico
+* recursos avançados
+
+Criar estrutura que permita adicionar `plan` ao usuário futuramente.
+
+Não implementar checkout agora.
+
+---
+
+# 38. Qualidade do código
+
+Prioridades:
+
+1. Código funcional
+2. Componentes reutilizáveis
+3. Tipagem TypeScript
+4. Segurança
+5. Responsividade
+6. UX
+7. Design consistente
+
+Evite:
+
+* código duplicado
+* componentes gigantes
+* lógica diretamente dentro da UI quando puder ser separada
+* dados hardcoded espalhados
+* secrets no frontend
+
+---
+
+# 39. Critérios de conclusão
+
+Considere o projeto concluído somente quando:
+
+* Landing page estiver pronta
+* Login estiver funcionando
+* Cadastro estiver funcionando
+* Onboarding estiver funcionando
+* Dashboard estiver funcionando
+* Usuário puder cadastrar currículo
+* Usuário puder editar currículo
+* Vagas estiverem disponíveis
+* Match Score estiver funcionando com dados de demonstração
+* Página de detalhes da vaga estiver funcionando
+* Análise de gaps estiver funcionando
+* Geração de currículo personalizado estiver estruturada
+* Editor de currículo estiver funcionando
+* Preview estiver funcionando
+* ATS Score estiver sendo exibido
+* Histórico de currículos estiver funcionando
+* Candidaturas estiverem funcionando
+* Perfil estiver funcionando
+* Configurações estiverem funcionando
+* Banco Supabase estiver estruturado
+* RLS estiver configurado
+* Layout for responsivo
+* Todos os estados de loading/empty/error existirem
+* shadcn/ui for utilizado como design system
+* Cores azul claro + branco + amarelo claro forem consistentes
+* Não existirem informações fictícias apresentadas como integrações reais
+* Não houver API keys expostas no frontend
+
+---
+
+# 40. Regra final de implementação
+
+Não quero que você apenas descreva como fazer.
+
+**Construa o aplicativo.**
+
+Comece pela arquitetura e banco de dados, depois implemente a autenticação, layout global, design system, onboarding, currículo, vagas, matching, geração de currículo ATS, candidaturas e configurações.
+
+Priorize primeiro uma experiência completa e funcional de ponta a ponta.
+
+Sempre que precisar escolher entre adicionar mais elementos visuais ou melhorar a funcionalidade principal, priorize:
+
+**funcionalidade → UX → acessibilidade → consistência visual → detalhes decorativos.**
+
+O resultado final deve parecer um produto SaaS real, pronto para ser testado por usuários.
+
+```
+```
+
+CODIGO 
+
+
