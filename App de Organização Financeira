@@ -1,0 +1,44 @@
+App de Organização Financeira do joão vitor lopes da silva
+
+...markd
+
+# PRD – App de Organização Financeira Conversacional
+
+## 1. Contexto
+Criar um aplicativo de organização de finanças pessoais que funcione por meio de conversas naturais com o usuário.
+Objetivo: simplificar o controle financeiro sem formulários complexos ou planilhas.
+
+## 2. Problema
+- Apps atuais exigem muita entrada manual.
+- Pouca personalização e experiência engajante.
+- Usuários iniciantes desistem rapidamente do controle financeiro.
+
+## 3. Público-Alvo
+- Pessoas que querem começar a organizar suas finanças de forma prática.
+- Usuários iniciantes que buscam simplicidade e orientação.
+- Design universal: solução pensada para oferecer boa experiência ao maior número possível de usuários, incluindo diferentes idades, níveis de habilidade digital e necessidades de acessibilidade.
+
+## 4. Funcionalidades-Chave
+- Registro via chat: inserir gastos em linguagem natural.
+- Classificação automática: categorização inteligente das despesas.
+- Metas financeiras: criar e acompanhar objetivos.
+- Agente Financeiro: recomendações personalizadas de economia.
+- Relatórios simples: visão clara e acessível da situação financeira.
+
+## 5. Entregável da IA (MVP)
+- Principais telas:
+  - Tela de chat (entrada de gastos e interação com o agente).
+  - Tela de metas (definição e acompanhamento).
+  - Tela de relatórios (gráficos simples e personalizados).
+- Recursos necessários:
+  - Processamento de linguagem natural (NLP).
+  - Motor de categorização automática.
+  - Sistema de notificações e dicas.
+  - Design universal aplicado: contraste adequado, navegação simples, suporte a leitores de tela, textos claros e ícones intuitivos.
+- Validação inicial:
+  - Teste com grupo diverso de usuários (diferentes idades e níveis de experiência digital).
+  - Coleta de feedback sobre clareza, acessibilidade e engajamento.
+
+
+## codigo feito   
+https://lovable.dev/projects/0805d058-0a18-45f2-82e9-4411ceb0e1ce?view=files&file=caderninho-financas-github.zip
