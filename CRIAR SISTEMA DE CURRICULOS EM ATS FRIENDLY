@@ -1564,5 +1564,426 @@ O resultado final deve parecer um produto SaaS real, pronto para ser testado por
 ```
 
 CODIGO 
+matchcv/
+├── public/
+│   └── favicon.ico
+├── src/
+│   ├── assets/
+│   │   └── illustrations/
+│   ├── components/
+│   │   ├── ui/                    # componentes shadcn (button, card, dialog, etc.)
+│   │   ├── layout/
+│   │   │   ├── AppSidebar.tsx
+│   │   │   ├── AppHeader.tsx
+│   │   │   ├── DashboardLayout.tsx
+│   │   │   └── PublicLayout.tsx
+│   │   ├── shared/
+│   │   │   ├── EmptyState.tsx
+│   │   │   ├── LoadingSkeleton.tsx
+│   │   │   ├── ScoreBadge.tsx
+│   │   │   ├── ErrorBoundary.tsx
+│   │   │   └── ConfirmDialog.tsx
+│   │   ├── jobs/
+│   │   │   ├── JobCard.tsx
+│   │   │   ├── JobFilters.tsx
+│   │   │   └── JobDetailsPanel.tsx
+│   │   ├── resume/
+│   │   │   ├── ResumeCard.tsx
+│   │   │   ├── ResumeEditor.tsx
+│   │   │   ├── ResumePreview.tsx
+│   │   │   └── ATSScorePanel.tsx
+│   │   ├── applications/
+│   │   │   ├── KanbanBoard.tsx
+│   │   │   └── ApplicationCard.tsx
+│   │   └── plans/
+│   │       ├── PlanCard.tsx
+│   │       └── UpgradeDialog.tsx
+│   ├── pages/
+│   │   ├── Landing.tsx
+│   │   ├── Login.tsx
+│   │   ├── Register.tsx
+│   │   ├── Onboarding.tsx
+│   │   ├── Dashboard.tsx
+│   │   ├── Jobs.tsx
+│   │   ├── JobDetails.tsx
+│   │   ├── ResumeGenerator.tsx
+│   │   ├── MyResumes.tsx
+│   │   ├── SavedJobs.tsx
+│   │   ├── Applications.tsx
+│   │   ├── Profile.tsx
+│   │   ├── Settings.tsx
+│   │   ├── Plans.tsx
+│   │   └── NotFound.tsx
+│   ├── hooks/
+│   │   ├── useAuth.ts
+│   │   ├── usePlan.ts
+│   │   ├── useDebounce.ts
+│   │   └── useMatchScore.ts
+│   ├── services/
+│   │   ├── supabaseClient.ts
+│   │   ├── authService.ts
+│   │   ├── jobsService.ts
+│   │   ├── resumeService.ts
+│   │   ├── applicationsService.ts
+│   │   ├── aiService.ts
+│   │   └── matchEngine.ts
+│   ├── types/
+│   │   ├── job.ts
+│   │   ├── resume.ts
+│   │   ├── application.ts
+│   │   └── user.ts
+│   ├── lib/
+│   │   └── utils.ts
+│   ├── App.tsx
+│   ├── main.tsx
+│   └── index.css
+├── supabase/
+│   ├── functions/
+│   │   └── generate-resume-content/
+│   │       └── index.ts
+│   └── migrations/
+│       └── 001_initial_schema.sql
+├── .env.example
+├── package.json
+├── tailwind.config.ts
+├── tsconfig.json
+└── vite.config.ts
+
+
+
+{
+  "name": "matchcv",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@radix-ui/react-dialog": "^1.1.2",
+    "@radix-ui/react-dropdown-menu": "^2.1.2",
+    "@radix-ui/react-select": "^2.1.2",
+    "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-tabs": "^1.1.1",
+    "@radix-ui/react-toast": "^1.2.2",
+    "@radix-ui/react-tooltip": "^1.1.4",
+    "@supabase/supabase-js": "^2.45.4",
+    "@tanstack/react-query": "^5.59.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "date-fns": "^3.6.0",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.2",
+    "lucide-react": "^0.451.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.53.0",
+    "react-router-dom": "^6.27.0",
+    "recharts": "^2.12.7",
+    "sonner": "^1.5.0",
+    "tailwind-merge": "^2.5.3",
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.23.8",
+    "zustand": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^8.8.1",
+    "@typescript-eslint/parser": "^8.8.1",
+    "@vitejs/plugin-react": "^4.3.2",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.12.0",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.8"
+  }
+}
+
+
+
+-- ==========================================
+-- EXTENSIONS
+-- ==========================================
+create extension if not exists "uuid-ossp";
+
+-- ==========================================
+-- ENUMS
+-- ==========================================
+create type plan_type as enum ('free', 'premium');
+create type subscription_status as enum ('active', 'canceled', 'expired');
+create type job_type as enum ('clt', 'pj', 'estagio', 'freelance', 'temporario');
+create type job_modality as enum ('presencial', 'remoto', 'hibrido');
+create type application_status as enum ('salva', 'aplicada', 'entrevista', 'oferta', 'rejeitada', 'aceita');
+create type ai_action_type as enum ('summary', 'optimize_experience', 'reorder_skills', 'ats_score');
+
+-- ==========================================
+-- PROFILES (dados do usuário, complementa auth.users)
+-- ==========================================
+create table profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  full_name text,
+  headline text,
+  phone text,
+  location text,
+  avatar_url text,
+  linkedin_url text,
+  github_url text,
+  portfolio_url text,
+  bio text,
+  onboarding_completed boolean default false,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+-- ==========================================
+-- EXPERIENCES
+-- ==========================================
+create table experiences (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid references profiles(id) on delete cascade not null,
+  company text not null,
+  position text not null,
+  location text,
+  start_date date not null,
+  end_date date,
+  is_current boolean default false,
+  description text,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+-- ==========================================
+-- EDUCATION
+-- ==========================================
+create table education (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid references profiles(id) on delete cascade not null,
+  institution text not null,
+  degree text not null,
+  field_of_study text,
+  start_date date,
+  end_date date,
+  is_current boolean default false,
+  created_at timestamptz default now()
+);
+
+-- ==========================================
+-- SKILLS
+-- ==========================================
+create table skills (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid references profiles(id) on delete cascade not null,
+  name text not null,
+  level smallint check (level between 1 and 5) default 3,
+  category text,
+  created_at timestamptz default now()
+);
+
+-- ==========================================
+-- LANGUAGES
+-- ==========================================
+create table languages (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid references profiles(id) on delete cascade not null,
+  name text not null,
+  proficiency text,
+  created_at timestamptz default now()
+);
+
+-- ==========================================
+-- JOBS (vagas)
+-- ==========================================
+create table jobs (
+  id uuid primary key default uuid_generate_v4(),
+  title text not null,
+  company text not null,
+  company_logo_url text,
+  location text,
+  modality job_modality not null default 'presencial',
+  job_type job_type not null default 'clt',
+  salary_min numeric,
+  salary_max numeric,
+  salary_hidden boolean default false,
+  description text not null,
+  requirements text[],
+  responsibilities text[],
+  benefits text[],
+  required_skills text[],
+  seniority text,
+  source_url text,
+  is_active boolean default true,
+  posted_at timestamptz default now(),
+  created_at timestamptz default now()
+);
+
+create index idx_jobs_active on jobs(is_active);
+create index idx_jobs_title on jobs using gin (to_tsvector('portuguese', title));
+
+-- ==========================================
+-- SAVED JOBS (vagas favoritadas)
+-- ==========================================
+create table saved_jobs (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid references profiles(id) on delete cascade not null,
+  job_id uuid references jobs(id) on delete cascade not null,
+  created_at timestamptz default now(),
+  unique(user_id, job_id)
+);
+
+-- ==========================================
+-- RESUMES (currículos gerados/salvos)
+-- ==========================================
+create table resumes (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid references profiles(id) on delete cascade not null,
+  job_id uuid references jobs(id) on delete set null,
+  title text not null,
+  template text default 'default',
+  content jsonb not null default '{}'::jsonb, -- snapshot completo do currículo (summary, experiences, skills ordenados, etc.)
+  ats_score smallint,
+  match_score smallint,
+  is_favorite boolean default false,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+create index idx_resumes_user on resumes(user_id);
+
+-- ==========================================
+-- APPLICATIONS (candidaturas / kanban)
+-- ==========================================
+create table applications (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid references profiles(id) on delete cascade not null,
+  job_id uuid references jobs(id) on delete cascade not null,
+  resume_id uuid references resumes(id) on delete set null,
+  status application_status not null default 'salva',
+  notes text,
+  applied_at timestamptz,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now(),
+  unique(user_id, job_id)
+);
+
+create index idx_applications_user_status on applications(user_id, status);
+
+-- ==========================================
+-- SUBSCRIPTIONS (planos)
+-- ==========================================
+create table subscriptions (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid references profiles(id) on delete cascade not null unique,
+  plan plan_type not null default 'free',
+  status subscription_status not null default 'active',
+  current_period_end timestamptz,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
+);
+
+-- ==========================================
+-- AI USAGE LOGS (rate limiting)
+-- ==========================================
+create table ai_usage_logs (
+  id uuid primary key default uuid_generate_v4(),
+  user_id uuid references profiles(id) on delete cascade not null,
+  action ai_action_type not null,
+  created_at timestamptz default now()
+);
+
+create index idx_ai_logs_user_date on ai_usage_logs(user_id, created_at);
+
+-- ==========================================
+-- TRIGGER: criar profile + subscription free ao registrar usuário
+-- ==========================================
+create or replace function handle_new_user()
+returns trigger as $$
+begin
+  insert into profiles (id, full_name)
+  values (new.id, new.raw_user_meta_data->>'full_name');
+
+  insert into subscriptions (user_id, plan, status)
+  values (new.id, 'free', 'active');
+
+  return new;
+end;
+$$ language plpgsql security definer;
+
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute function handle_new_user();
+
+-- ==========================================
+-- TRIGGER: updated_at automático
+-- ==========================================
+create or replace function set_updated_at()
+returns trigger as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$ language plpgsql;
+
+create trigger trg_profiles_updated before update on profiles for each row execute function set_updated_at();
+create trigger trg_experiences_updated before update on experiences for each row execute function set_updated_at();
+create trigger trg_resumes_updated before update on resumes for each row execute function set_updated_at();
+create trigger trg_applications_updated before update on applications for each row execute function set_updated_at();
+create trigger trg_subscriptions_updated before update on subscriptions for each row execute function set_updated_at();
+
+-- ==========================================
+-- ROW LEVEL SECURITY
+-- ==========================================
+alter table profiles enable row level security;
+alter table experiences enable row level security;
+alter table education enable row level security;
+alter table skills enable row level security;
+alter table languages enable row level security;
+alter table jobs enable row level security;
+alter table saved_jobs enable row level security;
+alter table resumes enable row level security;
+alter table applications enable row level security;
+alter table subscriptions enable row level security;
+alter table ai_usage_logs enable row level security;
+
+-- PROFILES
+create policy "profiles_select_own" on profiles for select using (auth.uid() = id);
+create policy "profiles_update_own" on profiles for update using (auth.uid() = id);
+create policy "profiles_insert_own" on profiles for insert with check (auth.uid() = id);
+
+-- EXPERIENCES
+create policy "experiences_all_own" on experiences for all using (auth.uid() = user_id);
+
+-- EDUCATION
+create policy "education_all_own" on education for all using (auth.uid() = user_id);
+
+-- SKILLS
+create policy "skills_all_own" on skills for all using (auth.uid() = user_id);
+
+-- LANGUAGES
+create policy "languages_all_own" on languages for all using (auth.uid() = user_id);
+
+-- JOBS (leitura pública, sem escrita pelo client)
+create policy "jobs_select_all" on jobs for select using (true);
+
+-- SAVED JOBS
+create policy "saved_jobs_all_own" on saved_jobs for all using (auth.uid() = user_id);
+
+-- RESUMES
+create policy "resumes_all_own" on resumes for all using (auth.uid() = user_id);
+
+-- APPLICATIONS
+create policy "applications_all_own" on applications for all using (auth.uid() = user_id);
+
+-- SUBSCRIPTIONS
+create policy "subscriptions_select_own" on subscriptions for select using (auth.uid() = user_id);
+create policy "subscriptions_update_own" on subscriptions for update using (auth.uid() = user_id);
+
+-- AI USAGE LOGS
+create policy "ai_logs_select_own" on ai_usage_logs for select using (auth.uid() = user_id);
+create policy "ai_logs_insert_own" on ai_usage_logs for insert with check (auth.uid() = user_id);
 
 
