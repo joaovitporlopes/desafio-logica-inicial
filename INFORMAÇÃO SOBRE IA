@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impacto do Código Gerado por IA na Manutenibilidade do Software</title>
+</head>
+<body>
+
+    <!-- Cabeçalho principal -->
+    <h1>Impacto do Código Gerado por Inteligência Artificial na Manutenibilidade do Software</h1>
+
+    <p>
+        <strong>Autor:</strong> <i>Vitor Lany Freitas Ferreira</i><br>
+        <small>Instituto de Ciências Exatas e Informática — PUC Minas</small><br>
+        <small>Belo Horizonte, MG — Brasil</small><br>
+        <small><u>Trabalho de Conclusão de Curso (TCC)</u> — Bacharelado em Engenharia de Software</small><br>
+        <small>Belo Horizonte, 23 de novembro de 2025.</small>
+    </p>
+
+    <hr>
+
+    <!-- Resumo -->
+    <h2>Resumo</h2>
+
+    <blockquote>
+        <p>
+            Ferramentas de <abbr title="Inteligência Artificial">IA</abbr> como o GitHub Copilot ampliam a produtividade,
+            mas levantam dúvidas sobre a qualidade do código produzido. Este estudo investigou o impacto arquitetural ao
+            implementar <mark>115 funcionalidades</mark> em <mark>23 repositórios Java</mark> open source, utilizando a
+            reprodução sistemática de issues. Os resultados indicam um cenário misto: a IA preserva a coesão e a herança,
+            mas aumenta o acoplamento e a complexidade das classes. Além disso, novos code smells exigiram
+            <strong>38 minutos de refatoração por tarefa</strong>. Conclui-se que, sem revisão rigorosa, a dívida técnica
+            pode neutralizar os ganhos de velocidade.
+        </p>
+    </blockquote>
+
+    <hr>
+
+    <!-- 1. Introdução -->
+    <h2>1. Introdução</h2>
+
+    <p>
+        Com o aumento da relevância da <strong>Inteligência Artificial (IA)</strong>, especialmente dos Grandes Modelos
+        de Linguagem (<i>Large Language Models</i> — <abbr title="Large Language Models">LLMs</abbr>), o setor tem recebido
+        investimentos expressivos de empresas como Amazon, Google, Microsoft e Meta, que planejam direcionar mais de
+        <mark>US$ 300 bilhões</mark> à infraestrutura de IA ainda em 2025.
+    </p>
+
+    <p>
+        Esse avanço tecnológico também tem transformado práticas de desenvolvimento de software por meio de ferramentas
+        como o <strong>GitHub Copilot</strong>, que utiliza um modelo de IA treinado em repositórios open-source para
+        converter instruções em linguagem natural em código. Atuando como um <i>pair programmer</i> virtual, o Copilot
+        fornece trechos de código e sugestões contextuais, auxiliando diretamente o trabalho do desenvolvedor.
+    </p>
+
+    <p>
+        Embora o uso de ferramentas de IA para a geração de código tenha promovido avanços expressivos, é necessário
+        investigar de maneira sistemática não apenas os ganhos imediatos de produtividade, mas também seus efeitos em
+        <u>médio e longo prazo</u>, especialmente no que diz respeito à qualidade estrutural e à manutenibilidade dos
+        sistemas produzidos.
+    </p>
+
+    <h3>1.1. Contexto e Motivação</h3>
+
+    <p>
+        Em um estudo conduzido por Russo (2024), desenvolvedores foram entrevistados sobre suas percepções a respeito
+        dessas ferramentas, e <mark>13% deles</mark> relataram preocupações específicas relacionadas à
+        <strong>manutenibilidade</strong> do código gerado. A manutenibilidade, definida como a facilidade de modificar
+        um software <small>(IEEE, 1990)</small>, constitui um dos principais fatores de custo ao longo do ciclo de vida
+        de um sistema.
+    </p>
+
+    <p>
+        Estudos recentes indicam que essas ferramentas nem sempre geram soluções otimizadas, introduzindo problemas como
+        <i>code smells</i> e redundâncias que podem comprometer a escalabilidade dos sistemas e a colaboração entre equipes
+        <small>(Siddiq et al., 2022; Nguyen and Nadi, 2022)</small>.
+    </p>
+
+    <h3>1.2. Objetivos</h3>
+
+    <p>Este trabalho tem como objetivo avaliar os efeitos da utilização de ferramentas baseadas em IA na geração de
+        código sobre a <strong>manutenibilidade de software</strong>. Os objetivos específicos são:</p>
+
+    <ol>
+        <li>Selecionar e validar os repositórios e issues a serem utilizados nas análises;</li>
+        <li>Mensurar a variação das métricas de manutenibilidade e complexidade fornecidas pela ferramenta <strong>CK</strong>, comparando os valores antes e depois da geração de código;</li>
+        <li>Identificar, classificar e ranquear a criticidade dos <i>code smells</i> introduzidos após o uso do Copilot, utilizando a ferramenta <strong>SonarQube</strong>.</li>
+    </ol>
+
+    <h3>1.3. Organização do Artigo</h3>
+
+    <ul>
+        <li><strong>Seção 2</strong> — Fundamentação teórica;</li>
+        <li><strong>Seção 3</strong> — Trabalhos relacionados;</li>
+        <li><strong>Seção 4</strong> — Materiais e métodos;</li>
+        <li><strong>Seção 5</strong> — Resultados e discussão;</li>
+        <li><strong>Seção 6</strong> — Ameaças à validade;</li>
+        <li><strong>Seção 7</strong> — Conclusão e trabalhos futuros.</li>
+    </ul>
+
+    <hr>
+
+    <!-- 2. Fundamentação Teórica -->
+    <h2>2. Fundamentação Teórica</h2>
+
+    <h3>2.1. Ferramentas de Geração Automática de Código</h3>
+
+    <p>
+        A evolução das ferramentas de apoio ao desenvolvimento culminou no surgimento de assistentes de codificação
+        baseados em <strong>Inteligência Artificial Generativa</strong>. Ferramentas como o GitHub Copilot fundamentam-se
+        em <abbr title="Large Language Models">LLMs</abbr>, arquiteturas de redes neurais treinadas em grandes volumes de
+        dados textuais, incluindo repositórios de código públicos.
+    </p>
+
+    <p>
+        Na prática, essas ferramentas atuam como um <i>pair programmer</i>, auxiliando tanto na escrita de código
+        repetitivo quanto na prototipagem de funções complexas. No entanto, a natureza probabilística dos
+        <abbr title="Large Language Models">LLMs</abbr> implica que o código gerado <u>nem sempre</u> é a solução mais
+        eficiente, segura ou correta para o problema apresentado.
+    </p>
+
+    <blockquote>
+        <p>
+            <i>"A produção da IA demanda validação rigorosa e, frequentemente, refatoração por parte dos desenvolvedores
+            para adequar-se aos requisitos não funcionais do sistema."</i>
+            <small>— Clark et al. (2024)</small>
+        </p>
+    </blockquote>
+
+    <h3>2.2. Manutenibilidade e Métricas de Software</h3>
+
+    <p>
+        A manutenibilidade de software refere-se à facilidade com que um sistema pode ser modificado para corrigir falhas,
+        aprimorar seu desempenho ou adaptar-se a novos requisitos ou ambientes <small>(IEEE, 1990)</small>. A avaliação da
+        manutenibilidade frequentemente se apoia em métricas estruturais de código amplamente utilizadas na engenharia de
+        software orientada a objetos.
+    </p>
+
+    <p>Entre essas métricas, destacam-se:</p>
+
+    <ul>
+        <li><strong>DIT</strong> — Profundidade de herança;</li>
+        <li><strong>RFC</strong> — Resposta de uma classe;</li>
+        <li><strong>WMC</strong> — Complexidade interna dos métodos;</li>
+        <li><strong>LCOM</strong> — Coesão entre métodos;</li>
+        <li><strong>CBO</strong> — Acoplamento entre classes.</li>
+    </ul>
+
+    <h3>2.3. Code Smells</h3>
+
+    <p>
+        O termo <i>code smell</i> refere-se a indícios superficiais que sugerem a presença de problemas mais profundos na
+        estrutura de um sistema. Embora não representem necessariamente erros de execução, esses sinais apontam
+        fragilidades no design do código que podem comprometer sua <strong>legibilidade</strong>,
+        <strong>extensibilidade</strong> e <strong>manutenibilidade</strong> ao longo do tempo
+        <small>(Martin, 2009)</small>.
+    </p>
+
+    <p>
+        Tais sintomas violam princípios fundamentais da engenharia de software, como o
+        <abbr title="Princípio da Responsabilidade Única">PRU</abbr> e o
+        <abbr title="Princípio Aberto–Fechado">PAF</abbr>, prejudicando a modularidade e a capacidade de evolução do sistema.
+    </p>
+
+    <hr>
+
+    <!-- 3. Trabalhos Relacionados -->
+    <h2>3. Trabalhos Relacionados</h2>
+
+    <p>A seguir, os principais estudos que fundamentam esta pesquisa:</p>
+
+    <ol>
+        <li>
+            <strong>Nguyen e Nadi (2022)</strong> — Analisaram a eficácia do GitHub Copilot na geração de código com base
+            em 33 questões da plataforma LeetCode. Dentre as linguagens analisadas, <mark>Java apresentou a maior taxa de
+            correção (57%)</mark>, enquanto JavaScript obteve a menor (27%).
+        </li>
+        <li>
+            <strong>Goel e Kaur (2025)</strong> — Conduziram um estudo empírico voltado à previsão da manutenibilidade de
+            software, demonstrando que métricas clássicas como DIT, NOC, RFC, WMC, LCOM e CBO apresentam forte relação
+            com a propensão a mudanças em classes.
+        </li>
+        <li>
+            <strong>Siddiq et al. (2022)</strong> — Questionaram a qualidade dos datasets utilizados no treinamento de
+            modelos de geração de código e a possível propagação de <i>code smells</i> para o código gerado. Analisaram
+            <mark>508.707 snippets</mark> em Python.
+        </li>
+        <li>
+            <strong>Clark et al. (2024)</strong> — Analisaram a qualidade e a complexidade do código gerado pelo ChatGPT,
+            utilizando a base pública DevGPT com mais de <mark>12 mil trechos</mark> de código. Os dados indicam que o
+            código gerado apresenta uma estimativa de cerca de <del>baixo</del> <mark>20,49 bugs por snippet</mark>.
+        </li>
+        <li>
+            <strong>Niu et al. (2024)</strong> — Observaram que a eficiência do código gerado por <abbr title="Large Language Models">LLMs</abbr>
+            independe da taxa de correção e do tamanho dos modelos. Estratégias como <i>chain-of-thought</i> podem melhorar
+            a eficiência, especialmente em problemas complexos.
+        </li>
+    </ol>
+
+    <hr>
+
+    <!-- 4. Materiais e Métodos -->
+    <h2>4. Materiais e Métodos</h2>
+
+    <p>
+        O trabalho adota uma abordagem de pesquisa <strong>quantitativa</strong>, de natureza <strong>aplicada</strong>.
+        Para a execução deste estudo, considera-se o uso do agente de código <strong>GitHub Copilot</strong>, baseado no
+        modelo de linguagem <mark>GPT-5 mini</mark>, para a geração de código em linguagem Java.
+    </p>
+
+    <h3>4.1. Coleta de Issues</h3>
+
+    <p>A primeira etapa consistiu na coleta dos repositórios e das issues. O processo seguiu os seguintes passos:</p>
+
+    <ol>
+        <li>Reunião de um conjunto de <strong>1.000 repositórios</strong> open source em Java, selecionados entre os mais populares do GitHub;</li>
+        <li>Aplicação de expressão regular para detecção automática de issues relevantes: <font color="blue"><code>(enhancement|feature|suggestion|new[-]?feature|funcionalidade|improvement)</code></font>;</li>
+        <li>Triagem manual para remover issues restritas à melhoria de documentação;</li>
+        <li>Seleção de <strong>50 projetos</strong> Java mais populares com arquivos de configuração Maven (<i>pom.xml</i>) ou Gradle (<i>build.gradle</i>);</li>
+        <li>Coleta de <strong>5 issues recentes</strong> por repositório, atendendo aos critérios: estado aberto, descrição detalhada e sem <i>pull request</i> já mesclado.</li>
+    </ol>
+
+    <h3>4.2. Processamento e Extração de Métricas</h3>
+
+    <p>
+        A segunda etapa abrangeu a preparação do ambiente local, implementação das funcionalidades e coleta dos dados.
+        Cada repositório foi aberto no <strong>Visual Studio Code</strong> com a integração do GitHub Copilot, e instruções
+        foram fornecidas à ferramenta com base na descrição da issue correspondente.
+    </p>
+
+    <h3>4.3. Métricas Utilizadas</h3>
+
+    <table border="1">
+        <tr>
+            <th>Métrica</th>
+            <th>Descrição</th>
+        </tr>
+        <tr>
+            <td><strong>LCOM*</strong></td>
+            <td>Falta de coesão entre métodos (escala de 0 a 1)</td>
+        </tr>
+        <tr>
+            <td><strong>CBO</strong></td>
+            <td>Acoplamento entre objetos (dependências externas)</td>
+        </tr>
+        <tr>
+            <td><strong>DIT</strong></td>
+            <td>Profundidade da árvore de herança</td>
+        </tr>
+        <tr>
+            <td><strong>WMC</strong></td>
+            <td>Métodos ponderados por classe (complexidade interna)</td>
+        </tr>
+        <tr>
+            <td><strong>RFC</strong></td>
+            <td>Resposta para uma classe (conjunto de métodos executáveis)</td>
+        </tr>
+    </table>
+
+    <p><br>Adicionalmente, foram coletadas métricas do <strong>SonarQube</strong>:</p>
+
+    <ul>
+        <li><strong>new maintainability issues</strong> — Quantidade total de novos <i>code smells</i> por criticidade (Blocker, High, Medium, Low, Info);</li>
+        <li><strong>new software quality maintainability remediation effort</strong> — Estimativa de esforço (em minutos) para correção de todos os <i>code smells</i> introduzidos.</li>
+    </ul>
+
+    <hr>
+
+    <!-- 5. Resultados -->
+    <h2>5. Resultados</h2>
+
+    <h3>5.1. Visão Geral da Amostra</h3>
+
+    <p>A análise final consolidou os seguintes dados:</p>
+
+    <ul>
+        <li><strong>23 repositórios</strong> analisados;</li>
+        <li><strong>1.045.251 estrelas</strong> acumuladas (média de 45.445 por repositório);</li>
+        <li><strong>25.801 issues abertas</strong> no momento da coleta;</li>
+        <li><strong>115 issues qualificadas</strong> implementadas com o GitHub Copilot;</li>
+        <li><strong>281 classes</strong> impactadas avaliadas.</li>
+    </ul>
+
+    <h3>5.2. Análise da Coesão e Estrutura</h3>
+
+    <p>
+        O impacto na métrica <strong>LCOM*</strong> foi predominantemente <mark>neutro</mark>. Em
+        <strong>55,7%</strong> dos casos, a alteração realizada pela IA não modificou o índice de coesão da classe.
+        Em <strong>27,9%</strong> dos casos observou-se uma piora, enquanto apenas <strong>16,4%</strong> das classes
+        apresentaram melhora.
+    </p>
+
+    <p>
+        Ao ampliar a análise para as demais métricas estruturais, observa-se que as métricas <strong>DIT</strong> e
+        <strong>LCOM*</strong> tenderam a uma leve melhora ou estabilidade. No entanto, as métricas de complexidade e
+        acoplamento <strong>CBO</strong>, <strong>RFC</strong> e <strong>WMC</strong> apresentaram uma tendência de
+        <del>melhora</del> <mark>piora</mark> e uma variação maior.
+    </p>
+
+    <blockquote>
+        <p>
+            <i>"Esse aumento no acoplamento (CBO e RFC) é uma tendência preocupante, pois em um projeto real, classes mais
+            acopladas geram um 'ripple effect', onde uma alteração em um componente pode exigir modificações em muitos
+            outros, elevando o risco e o custo da manutenção."</i>
+            <small>— Riaz et al. (2009)</small>
+        </p>
+    </blockquote>
+
+    <h3>5.3. Análise de Code Smells e Dívida Técnica</h3>
+
+    <p>
+        Entre as 115 issues implementadas, <mark>57 resultaram na introdução de pelo menos um code smell</mark>.
+        A distribuição da severidade desses problemas revelou:
+    </p>
+
+    <ul>
+        <li><strong>52,3%</strong> — Criticidade <font color="orange">Medium</font>;</li>
+        <li><strong>27,1%</strong> — Criticidade <font color="red">High</font>;</li>
+        <li>Demais — Criticidades Low, Info e Blocker.</li>
+    </ul>
+
+    <p>
+        O esforço médio de refatoração para as issues que introduziram débitos foi de
+        <mark><strong>38,1 minutos</strong></mark> por issue problemática. Embora esse valor unitário possa parecer
+        pequeno, ele funciona como uma espécie de <i>"taxa de refatoração"</i> associada a cada nova funcionalidade gerada
+        pela IA. Em projetos de grande porte, o acúmulo desse esforço adicional pode resultar em
+        <strong>semanas de trabalho</strong> dedicadas exclusivamente à correção de dívida técnica.
+    </p>
+
+    <h3>5.4. Discussão dos Resultados</h3>
+
+    <p>
+        A análise conjunta das métricas revela uma <strong>dualidade</strong> no comportamento do GitHub Copilot:
+    </p>
+
+    <ul>
+        <li><strong>Pontos positivos:</strong> A ferramenta demonstra competência em preservar o escopo local das classes, mantendo a coesão (LCOM*) e a herança (DIT) estáveis;</li>
+        <li><strong>Pontos negativos:</strong> A degradação consistente no acoplamento (CBO, RFC) e na complexidade (WMC) indica que a IA tende a aumentar a interdependência entre componentes.</li>
+    </ul>
+
+    <p>
+        Esse padrão sugere que, no seu estado atual, essas ferramentas atuam com maior eficácia como
+        <i>assistentes de implementação de baixo nível</i>, focadas na resolução imediata de problemas, mas ainda carecem
+        da <u>visão arquitetural</u> necessária para otimizar o design do sistema em uma escala macro.
+    </p>
+
+    <hr>
+
+    <!-- 6. Ameaças à Validade -->
+    <h2>6. Ameaças à Validade</h2>
+
+    <h3>6.1. Validade de Construção</h3>
+    <p>
+        Os resultados obtidos podem não refletir plenamente o impacto real da IA em um cenário completo de desenvolvimento,
+        pois a análise considerou apenas aspectos estruturais do código, sem verificar se as implementações estavam
+        corretas ou completas do ponto de vista funcional.
+    </p>
+
+    <h3>6.2. Validade Interna</h3>
+    <p>
+        Os resultados podem ser influenciados pelas interações necessárias para garantir que a IA produzisse código
+        adequado ao contexto do estudo. Intervenções pontuais foram realizadas, orientando a ferramenta a gerar
+        exclusivamente código Java.
+    </p>
+
+    <h3>6.3. Validade Externa</h3>
+    <p>
+        Este estudo foi conduzido utilizando exclusivamente o <strong>GitHub Copilot</strong> (modelo GPT-5 mini) e a
+        linguagem <strong>Java</strong>. Os resultados podem não ser generalizáveis para outras ferramentas como
+        <del>sendo aplicáveis universalmente</del> Amazon CodeWhisperer ou Tabnine, ou para outras linguagens de programação.
+    </p>
+
+    <hr>
+
+    <!-- 7. Conclusão -->
+    <h2>7. Conclusão e Trabalhos Futuros</h2>
+
+    <p>
+        Este trabalho se propôs a investigar os impactos da utilização de ferramentas de Inteligência Artificial,
+        especificamente o <strong>GitHub Copilot</strong>, na manutenibilidade de software. Os resultados revelam um
+        <mark>cenário complexo</mark>, que aponta tanto para a capacidade da IA de se integrar a arquiteturas existentes
+        quanto para os riscos associados à sua adoção acrítica.
+    </p>
+
+    <h3>Principais Conclusões</h3>
+
+    <ol>
+        <li>O código gerado por IA tende a <strong>preservar</strong> a estrutura de herança (DIT) e a coesão interna das classes (LCOM*);</li>
+        <li>As métricas de <strong>acoplamento</strong> (CBO e RFC) e <strong>complexidade</strong> (WMC) apresentaram clara tendência de deterioração;</li>
+        <li>A análise de <i>code smells</i> revelou uma predominância de problemas de criticidade <font color="orange">média</font> e <font color="red">alta</font>;</li>
+        <li>O esforço médio de remediação de <mark>38,1 minutos</mark> por issue problemática quantifica a dívida técnica introduzida;</li>
+        <li>A utilização de IA para geração de código gera um <strong>paradoxo de produtividade</strong>: acelera o desenvolvimento, mas introduz dívida técnica oculta.</li>
+    </ol>
+
+    <h3>Trabalhos Futuros</h3>
+
+    <ul>
+        <li>Comparar os resultados com ferramentas como <strong>Amazon CodeWhisperer</strong> e <strong>Tabnine</strong>;</li>
+        <li>Investigar linguagens como <strong>Python</strong> e <strong>JavaScript</strong> de diferentes paradigmas;</li>
+        <li>Avaliar se o uso de instruções detalhadas, considerando restrições arquitetônicas e de qualidade, é capaz de mitigar <i>code smells</i> e melhorar a manutenibilidade.</li>
+    </ul>
+
+    <hr>
+
+    <!-- Referências -->
+    <h2>Referências</h2>
+
+    <ol>
+        <li>ANICHE, M. (2016). <i>Ck: Code metrics for java code by means of static analysis</i>. Disponível em: <a href="https://github.com/mauricioaniche/ck" target="_blank">github.com/mauricioaniche/ck</a>.</li>
+        <li>CLARK, A. et al. (2024). <i>A quantitative analysis of quality and consistency in ai-generated code</i>. In: ICoSSE 2024, p. 37–41.</li>
+        <li>DEVI, A.; CHARAYA, S.; MAAN, M. (2023). <i>Factors influencing software maintainability prediction using soft computing</i>. In: AISC 2023, p. 1390–1394.</li>
+        <li>FENTON, N. E.; BIEMAN, J. (2014). <i>Software Metrics: A Rigorous and Practical Approach</i>. CRC Press, 3ª edição.</li>
+        <li>GOEL, V.; KAUR, A. (2025). <i>Software maintainability datasets collection across android and apache kafka versions</i>. Procedia Computer Science, 258:3944–3957.</li>
+        <li>IEEE (1990). <i>IEEE Standard Glossary of Software Engineering Terminology</i>. IEEE Std 610.12-1990.</li>
+        <li>MARTIN, R. C. (2009). <i>Código Limpo: Habilidades Práticas do Agile Software</i>. Alta Books.</li>
+        <li>NGUYEN, N.; NADI, S. (2022). <i>An empirical evaluation of github copilot's code suggestions</i>. In: MSR 2022, p. 1–5.</li>
+        <li>NIU, C. et al. (2024). <i>On evaluating the efficiency of source code generated by llms</i>. In: Forge 2024, p. 103–107.</li>
+        <li>RUSSO, D. (2024). <i>Navigating the complexity of generative ai adoption in software engineering</i>. ACM TOSEM, 33(5).</li>
+        <li>SIDDIQ, M. L. et al. (2022). <i>An empirical study of code smells in transformer-based code generation techniques</i>. In: SCAM 2022, p. 71–82.</li>
+        <li>SOMMERVILLE, I. (2019). <i>Engenharia de Software</i>. Pearson, 10ª edição.</li>
+    </ol>
+
+    <hr>
+
+    <!-- Rodapé -->
+    <h6>Repositório do TCC</h6>
+    <p>
+        <small>Pacote de replicação disponível em:
+        <a href="https://github.com/ICEI-PUC-Minas-PPLES-TI/plf-es-2025-1-tcci-0393100-pes-vitor-lany" target="_blank">
+            GitHub — ICEI PUC Minas
+        </a></small>
+    </p>
+
+    <p>
+        <small><i>Desafio de Projeto — Trilha HTML Módulo 1 — Digital Innovation One</i></small><br>
+        <small><sup>©</sup> 2025 — Conteúdo adaptado do TCC de Vitor Lany Freitas Ferreira para fins educacionais.</small>
+    </p>
+
+</body>
+</html>
