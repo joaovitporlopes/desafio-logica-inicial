@@ -1,0 +1,56 @@
+// ============================================
+//  DESAFIO DIO - Escrevendo as Classes de um Jogo
+// ============================================
+
+// ---------- CLASSE (Classes e Objetos) ----------
+// Classe genérica que representa um herói de aventura
+class Heroi {
+    // O construtor define as PROPRIEDADES (nome, idade, tipo)
+    constructor(nome, idade, tipo) {
+        this.nome = nome;
+        this.idade = idade;
+        this.tipo = tipo;
+    }
+
+    // ---------- FUNÇÃO / MÉTODO ----------
+    atacar() {
+        // VARIÁVEL que guardará a descrição do ataque
+        let ataque;
+
+        // ---------- ESTRUTURA DE DECISÃO ----------
+        // Define o ataque conforme o tipo do herói
+        switch (this.tipo.toLowerCase()) {
+            case "mago":
+                ataque = "magia";
+                break;
+            case "guerreiro":
+                ataque = "espada";
+                break;
+            case "monge":
+                ataque = "artes marciais";
+                break;
+            case "ninja":
+                ataque = "shuriken";
+                break;
+            default:
+                ataque = "um ataque misterioso";
+        }
+
+        // Saída: "o {tipo} atacou usando {ataque}"
+        console.log(`o ${this.tipo} atacou usando ${ataque}`);
+    }
+}
+
+// ---------- LAÇOS DE REPETIÇÃO ----------
+// Criando um array de heróis (variáveis + operadores)
+const herois = [
+    new Heroi("Gandalf", 120, "mago"),
+    new Heroi("Arthur", 30, "guerreiro"),
+    new Heroi("Li", 45, "monge"),
+    new Heroi("Hattori", 25, "ninja")
+];
+
+// Percorre a lista e chama o método atacar de cada herói
+for (let i = 0; i < herois.length; i++) {
+    herois[i].atacar();
+}
